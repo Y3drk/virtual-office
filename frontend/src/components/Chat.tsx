@@ -5,60 +5,68 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 type Message = {
-    author: string;
-    text: string;
-  };
+  author: string;
+  text: string;
+};
 
 export const Chat = () => {
-    const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
-    function sendMessage(text: string) {
-      const newMessage = {
-        author: 'You',
-        text: text,
-      };
-      setMessages([...messages, newMessage]);
-    }
+  function sendMessage(text: string) {
+    const newMessage = {
+      author: "You",
+      text: text,
+    };
+    const updatedMessages = [...messages, newMessage];
+    setMessages(updatedMessages);
+  }
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        const inputValue = (event.currentTarget.querySelector('input') as HTMLInputElement).value;
-        sendMessage(inputValue);
-        (event.currentTarget as HTMLFormElement).reset();
-      }
-    return (
-        <Container>
-            <ChatHeader>
-                <ChatTitle>Chat</ChatTitle>
-                <ExitContainer>
-                <Link to ="../"><Exit>
-                    X
-                </Exit>
-                </Link>
-            </ExitContainer>
-            </ChatHeader>
-            <ChatMessageList>
-                <ChatMessage>
-                    <span className="message-author">Alice:</span>
-                    <span className="message-text">Hi Bob, how are you?</span>
-                </ChatMessage>
-                <ChatMessage>
-                    <span className="message-author">Bob:</span>
-                    <span className="message-text">Hey Alice, I'm good. How about you?</span>
-                </ChatMessage>
-                <ChatMessage>
-                    <span className="message-author">Alice:</span>
-                    <span className="message-text">I'm doing well, thanks for asking.</span>
-                </ChatMessage>
-            </ChatMessageList>
-            <ChatForm onSubmit={handleSubmit}>
-                <ChatInput type="text" name="input" placeholder="Type a message..." />
-                <ChatButton type="submit">Send</ChatButton>
-            </ChatForm>
-        </Container>
-      );
-}
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const inputValue = (event.currentTarget.querySelector("input") as HTMLInputElement)
+      .value;
+    if (!inputValue) return;
+    sendMessage(inputValue);
+    (event.currentTarget as HTMLFormElement).reset();
+  }
 
+  return (
+    <Container>
+      <ChatHeader>
+        <ChatTitle>Chat</ChatTitle>
+        <ExitContainer>
+          <Link to="../">
+            <Exit>X</Exit>
+          </Link>
+        </ExitContainer>
+      </ChatHeader>
+      <ChatMessageList>
+        <ChatMessage>
+          <span className="message-author">Alice:</span>
+          <span className="message-text">Hi Bob, how are you?</span>
+        </ChatMessage>
+        <ChatMessage>
+          <span className="message-author">Bob:</span>
+          <span className="message-text">Hey Alice, I'm good. How about you?</span>
+        </ChatMessage>
+        <ChatMessage>
+          <span className="message-author">Alice:</span>
+          <span className="message-text">I'm doing well, thanks for asking.</span>
+          {messages.map((message, index) => (
+            <ChatMessage key={index}>
+              <span className="message-author">{message.author}:</span>
+              <span className="message-text">{message.text}</span>
+            </ChatMessage>
+          ))}
+        </ChatMessage>
+      </ChatMessageList>
+      <ChatForm onSubmit={handleSubmit}>
+        <ChatInput type="text" name="input" placeholder="Type a message..." />
+        <ChatButton type="submit">Send</ChatButton>
+      </ChatForm>
+    </Container>
+  );
+};
 
 export const Container = styled.div`
   display: flex;
@@ -146,9 +154,9 @@ export const ChatButton = styled.button`
 `;
 
 export const ExitContainer = styled.div`
-    display: flex;
-    justify-content: flex-end;
-`
+  display: flex;
+  justify-content: flex-end;
+`;
 
 export const Exit = styled.div`
     width: 2vw;
