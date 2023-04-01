@@ -1,4 +1,4 @@
-package com.example.demo;
+package pl.agh.virtualoffice.backend;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
