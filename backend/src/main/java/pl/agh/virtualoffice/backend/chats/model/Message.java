@@ -5,6 +5,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import pl.agh.virtualoffice.backend.users.model.User;
 
+import java.util.Date;
+
 @Entity(name = "message")
 public class Message {
     @Id
@@ -14,6 +16,16 @@ public class Message {
     private User senderUser;
 
     private String text;
+
+    private Date data;
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
 
     public String getText() {
         return text;
