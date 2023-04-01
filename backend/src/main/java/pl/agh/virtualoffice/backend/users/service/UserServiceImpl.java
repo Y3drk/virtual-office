@@ -25,7 +25,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> addUsers(List<User> users) {
+    public List<User> clearAndAddNewUsers(List<User> users) {
+        userRepository.deleteAll();
         return userRepository.saveAll(users);
     }
 

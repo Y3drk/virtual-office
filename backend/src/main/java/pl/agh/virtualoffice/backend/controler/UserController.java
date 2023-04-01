@@ -41,7 +41,7 @@ public class UserController {
     @ResponseBody
     public List<User> addNewUsers(@RequestBody List<User> users) {
         users.forEach(user -> user.setState(NOT_LOGGED));
-        return userService.addUsers(users);
+        return userService.clearAndAddNewUsers(users);
     }
 
     @PutMapping("{userId}")

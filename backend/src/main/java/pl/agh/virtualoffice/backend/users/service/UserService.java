@@ -10,7 +10,7 @@ public interface UserService {
 
     List<User> getUsersByState(State state);
 
-    List<User> addUsers(List<User> users);
+    List<User> clearAndAddNewUsers(List<User> users);
 
     Optional<User> getUserById(int id);
 
