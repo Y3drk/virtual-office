@@ -1,6 +1,6 @@
 package pl.agh.virtualoffice.backend.users.model;
 
 public enum State {
-    ACTIVE,
-    INACTIVE
+    LOGGED,
+    NOT_LOGGED
 }

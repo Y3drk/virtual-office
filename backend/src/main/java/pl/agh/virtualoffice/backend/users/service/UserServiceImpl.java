@@ -7,6 +7,7 @@ import pl.agh.virtualoffice.backend.users.model.User;
 import pl.agh.virtualoffice.backend.users.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,6 +21,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsersByState(State state) {
-        return null;
+        return userRepository.findAllByState(state);
+    }
+
+    @Override
+    public List<User> addUsers(List<User> users) {
+        return userRepository.saveAll(users);
+    }
+
+    @Override
+    public Optional<User> getUserById(int id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public Optional<User> updateUserState(int id, State state) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.map(user -> {
+            user.setState(state);
+            return userRepository.save(user);
+        });
     }
 }
