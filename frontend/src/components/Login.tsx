@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-type UserState = "active" | "inactive";
-
-interface User {
-  id: number;
-  name: string;
-  state: UserState;
-}
+import { User } from "../types";
 
 export const Login = () => {
   const [freeUsers, setFreeUsers] = useState<User[]>([]);
