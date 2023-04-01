@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { Link, Outlet, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
 
 interface MovementProps {
@@ -10,6 +11,9 @@ export function Office() {
     //TODO: make left and top arrays for different users with local user at 0 index
     const [left, setLeft] = useState(0);
     const [top, setTop] = useState(0);
+
+
+
 
     const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         switch (event.code) {
@@ -38,6 +42,8 @@ export function Office() {
             <h1>OFFICE</h1>
             {/*//TODO: spawn divs according to the amount of users*/}
             <Circle top={top} left={left}><p>USER</p></Circle>
+            <Link to="chat"><ChatButton>Click</ChatButton></Link>
+            <Outlet />
         </Container>
     );
 }
@@ -67,3 +73,18 @@ export const Container = styled.div`
   background: orange;
 `;
 
+export const ChatButton = styled.div`
+    width: 5vw;
+    height: 3vh;
+    background: red;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    &:hover{
+        cursor: pointer;
+        opacity: 0.5;
+    }
+`;
