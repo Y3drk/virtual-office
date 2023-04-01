@@ -13,8 +13,9 @@ export const Login = () => {
   const [freeUsers, setFreeUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  // save selected user to local storage
   const handleUserSelected = (e: any) => {
-    console.log(e.target.value);
+    localStorage.setItem("user", e.target.value);
     setSelectedUser(e.target.value);
   };
 
@@ -46,16 +47,27 @@ export const Login = () => {
     <div>
       <p>Login page</p>
 
-      <select onChange={handleUserSelected}>
-        {freeUsers.map((user) => (
-          <option key={user.id} value={user.name}>
-            {user.name}
-          </option>
-        ))}
-      </select>
-      <button>
-        <Link to="office">login</Link>
-      </button>
+      {freeUsers.length ? (
+        <div>
+          <select onChange={handleUserSelected} defaultValue={"DEFAULT"}>
+            <option value="DEFAULT" disabled>
+              Select your option
+            </option>
+            {freeUsers.map((user) => (
+              <option key={user.id} value={user.name}>
+                {user.name}
+              </option>
+            ))}
+          </select>
+          {selectedUser && (
+            <button>
+              <Link to="office">login</Link>
+            </button>
+          )}
+        </div>
+      ) : (
+        <p>All users are logged in!</p>
+      )}
     </div>
   );
 };
