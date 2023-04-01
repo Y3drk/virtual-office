@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+
+import { Link, Outlet, Route, Routes } from "react-router-dom";
+
 import styled from "styled-components";
 
 interface MovementProps {
@@ -44,6 +47,10 @@ export function Office() {
         <Circle top={top} left={left}>
           <p>USER</p>
         </Circle>
+        <Link to="chat">
+          <ChatButton>Click</ChatButton>
+        </Link>
+        <Outlet />
       </Container>
     </div>
   );
@@ -71,3 +78,20 @@ export const Container = styled.div`
   height: 60vh;
   background: orange;
 `;
+
+export const ChatButton = styled.div`
+  width: 5vw;
+  height: 3vh;
+  background: red;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.5;
+  }
+`;
+
