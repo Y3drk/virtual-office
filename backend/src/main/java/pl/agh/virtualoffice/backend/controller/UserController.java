@@ -1,4 +1,4 @@
-package pl.agh.virtualoffice.backend.controler;
+package pl.agh.virtualoffice.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import pl.agh.virtualoffice.backend.users.model.State;
 import pl.agh.virtualoffice.backend.users.model.User;
+import pl.agh.virtualoffice.backend.users.positions.UserPositionProvider;
 import pl.agh.virtualoffice.backend.users.service.UserService;
+import pl.agh.virtualoffice.backend.util.Position;
 
 import java.util.List;
+import java.util.Map;
 
 import static pl.agh.virtualoffice.backend.users.model.State.NOT_LOGGED;
 
@@ -25,10 +28,12 @@ import static pl.agh.virtualoffice.backend.users.model.State.NOT_LOGGED;
 public class UserController {
 
     private final UserService userService;
+    private final UserPositionProvider userPositionProvider;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserPositionProvider userPositionProvider) {
         this.userService = userService;
+        this.userPositionProvider = userPositionProvider;
     }
 
     @GetMapping
@@ -49,5 +54,11 @@ public class UserController {
     public User changeUserState(@PathVariable int userId, @RequestParam State state) {
         return userService.updateUserState(userId, state).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    @GetMapping("positions")
+    @ResponseBody
+    public Map<Integer, Position> getAllUserPositions() {
+        return userPositionProvider.getAllUsersPositions();
     }
 }
