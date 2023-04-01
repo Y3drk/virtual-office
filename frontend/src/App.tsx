@@ -1,16 +1,16 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { Home } from "./components/Home";
-import { Test } from "./components/Test";
+import { Admin, Login, Office } from "./components";
 
-function App() {
+const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/test" element={<Test />} />
-      <Route path="*" element={<Home />} />
-    </Routes>
+    <div>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/admin" element={<Admin />}></Route>
+        <Route path="/office" element={<Office />} />
+      </Routes>
+    </div>
   );
-}
+};
 
 export default App;
