@@ -1,4 +1,4 @@
-package com.example.demo;
+package pl.agh.virtualoffice.backend;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

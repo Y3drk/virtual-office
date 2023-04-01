@@ -1,4 +1,4 @@
-package com.example.demo;
+package pl.agh.virtualoffice.backend;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,18 +1,16 @@
-import React from "react";
-import {Route, Routes} from "react-router-dom";
-import {LogIn} from "./components/LogIn";
-import {Office} from "./components/Office";
+import { Route, Routes } from "react-router-dom";
+import { Admin, Login, Office } from "./components";
 
-function App() {
-    return (
-        <Routes>
-            <Route path="/" element={<LogIn/>}/>
-            <Route path="/office" element={<Office/>}>
-
-            </Route>
-            <Route path="*" element={<LogIn/>}/>
-        </Routes>
-    );
-}
+const App = () => {
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/admin" element={<Admin />}></Route>
+        <Route path="/office" element={<Office />} />
+      </Routes>
+    </div>
+  );
+};
 
 export default App;
