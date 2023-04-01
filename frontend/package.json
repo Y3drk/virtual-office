@@ -19,19 +19,30 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "test": "DISABLE_ESLINT_PLUGIN=true react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
+  },
+  "devServer": {
+    "overlay": false
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
-  },
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
+  }
+},
   "browserslist": {
     "production": [
       ">0.2%",
