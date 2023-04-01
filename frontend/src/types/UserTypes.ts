@@ -1,4 +1,4 @@
-type UserState = "active" | "inactive";
+export type UserState = "NOT_LOGGED" | "LOGGED";
 
 export interface UserWithName {
   name: string;

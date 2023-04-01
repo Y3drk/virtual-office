@@ -6,7 +6,7 @@ const App = () => {
     <div>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/admin" element={<Admin />}></Route>
+        <Route path="/admin" element={<Admin />} />
         <Route path="/office" element={<Office />}>
           <Route path="chat" element={<Chat />} />
         </Route>
