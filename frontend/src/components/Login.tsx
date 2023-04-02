@@ -18,7 +18,7 @@ const colorOptions = [
 ];
 
 export const Login = () => {
-  const [freeUsers, setFreeUsers] = useState<User[]>([]);
+  const [notLoggedUsers, setFreeUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>("");
   
@@ -43,7 +43,7 @@ export const Login = () => {
         "user",
         JSON.stringify({ ...selectedUser, state: "LOGGED" }),
       );
-      return await putUser(selectedUser.id, "LOGGED");
+      return await putUser(selectedUser.id, { data: "LOGGED", field: "state" });
     }
   };
 
@@ -66,13 +66,13 @@ export const Login = () => {
       </Button>
   
       <Content>
-        {freeUsers.length ? (
+        {notLoggedUsers.length ? (
           <SelectContainer>
             <Select onChange={handleUserSelected} defaultValue={"DEFAULT"}>
               <option value="DEFAULT" disabled>
                 Select user
               </option>
-              {freeUsers.map((user) => (
+              {notLoggedUsers.map((user) => (
                 <option key={user.id} value={JSON.stringify(user)}>
                   {user.name}
                 </option>

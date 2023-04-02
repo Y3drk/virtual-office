@@ -3,8 +3,8 @@ package pl.agh.virtualoffice.backend.users.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.agh.virtualoffice.backend.users.model.State;
+import pl.agh.virtualoffice.backend.users.model.Status;
 import pl.agh.virtualoffice.backend.users.model.User;
-import pl.agh.virtualoffice.backend.users.model.UserStatus;
 import pl.agh.virtualoffice.backend.users.repository.UserRepository;
 
 import java.util.List;
@@ -46,10 +46,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> updateUserStatus(int id, UserStatus status) {
+    public Optional<User> updateUserStatus(int id, Status status) {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.map(user -> {
-            user.setUserStatus(status);
+            user.setStatus(status);
             return userRepository.save(user);
         });
     }
