@@ -3,5 +3,5 @@ export type {
   UserWithName,
   UserState,
   UserStatus,
-  UserWithPositions as ClientsideUser,
+  UserWithPositions,
 } from "./UserTypes";

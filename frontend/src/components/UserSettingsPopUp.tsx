@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { User } from "../types";
 import { UserStatus, UserWithPositions } from "../types/UserTypes";
 import { Button } from "../styles";
 import { useState } from "react";

@@ -6,7 +6,7 @@ import { Backdrop } from "./Backdrop";
 import image from "../assets/office_5.jpg";
 
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { ClientsideUser, User } from "../types";
+import { UserWithPositions, User } from "../types";
 import { getUsers, putUser } from "../config";
 import { Button } from "../styles";
 import { UserSettingsPopUp } from "./UserSettingsPopUp";
@@ -33,12 +33,14 @@ export function Office() {
   const archive = places[0];
   const desks = places.slice(1);
 
-  const [currentMappedUser, setCurrentMappedUser] = useState<ClientsideUser | null>(null);
+  const [currentMappedUser, setCurrentMappedUser] = useState<UserWithPositions | null>(
+    null,
+  );
 
   const [userLeft, setUserLeft] = useState(0);
   const [userTop, setUserTop] = useState(0);
 
-  const [clientsideUsers, setClientsideUsers] = useState<ClientsideUser[]>([]);
+  const [clientsideUsers, setClientsideUsers] = useState<UserWithPositions[]>([]);
 
   const [othersLeft, setOthersLeft] = useState<number[]>([]);
   const [othersTop, setOthersTop] = useState<number[]>([]);
@@ -63,7 +65,7 @@ export function Office() {
   };
 
   const mapDBUsersToClientside = (users: User[], currentUser2: User) => {
-    const results: ClientsideUser[] = [];
+    const results: UserWithPositions[] = [];
     users.map((user, index) => {
       if (user.name !== currentUser2.name) {
         results.push({ ...user, spawningPoint: index, position: [0, 0] });
@@ -128,7 +130,7 @@ export function Office() {
 
   useEffect(() => {
     getLoggedUsers();
-  }, [currentMappedUser]);
+  }, []);
 
   useEffect(() => {
     for (let idx in clientsideUsers) {
@@ -162,15 +164,10 @@ export function Office() {
           </DataRow>
           <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
             {clientsideUsers.map((user, index) => (
-              <div>
-                <OthersCircle
-                  key={user.id}
-                  left={othersLeft[index]}
-                  top={othersTop[index]}
-                >
-                  {user.name}
-                </OthersCircle>
-              </div>
+              <UserSpace top={othersTop[index]} left={othersLeft[index]} key={user.id}>
+                <UserSettings>{user.status}</UserSettings>
+                <OthersCircle>{user.name}</OthersCircle>
+              </UserSpace>
             ))}
             <UserSpace top={userTop} left={userLeft}>
               <UserSettings onClick={() => setSettingsIsOpen(true)}>
@@ -189,6 +186,7 @@ export function Office() {
             <UserSettingsPopUp
               onClose={() => {
                 setSettingsIsOpen(false);
+                getLoggedUsers();
               }}
               user={currentMappedUser}
             />
@@ -249,7 +247,7 @@ export const GeneralContainer = styled.div`
   align-items: center;
 `;
 
-export const OthersCircle = styled.div<MovementProps>`
+export const OthersCircle = styled.div`
   background: green;
   width: ${AVATAR_SIZE}px;
   height: ${AVATAR_SIZE}px;
@@ -263,10 +261,6 @@ export const OthersCircle = styled.div<MovementProps>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  position: absolute;
-  left: ${(props) => props.left}px;
-  top: ${(props) => props.top}px;
 `;
 
 export const OfficeContainer = styled.div`
