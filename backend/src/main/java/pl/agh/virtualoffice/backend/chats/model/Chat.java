@@ -3,6 +3,7 @@ package pl.agh.virtualoffice.backend.chats.model;
 import jakarta.persistence.*;
 import pl.agh.virtualoffice.backend.users.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "chat")

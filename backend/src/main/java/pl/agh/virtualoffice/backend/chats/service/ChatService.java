@@ -1,21 +1,30 @@
 package pl.agh.virtualoffice.backend.chats.service;
 
 import pl.agh.virtualoffice.backend.chats.model.Chat;
+import pl.agh.virtualoffice.backend.chats.model.Message;
+import pl.agh.virtualoffice.backend.chats.model.Privacy;
 import pl.agh.virtualoffice.backend.users.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChatService {
 
-    List<Chat> getChatsByUser(User user);
+//    List<Chat> getChatsByUser(User user);
 
     List<Chat> getChatsByTag(String tag);
 
-    Chat getChatById(int ID);
+    Optional<Chat> getChatById(int ID);
 
-    List<Chat> getPublicChats();
+    List<Chat> getChatsByPrivacy(Privacy privacy);
 
     List<Chat> getChats();
 
+    Chat addChat(Chat chat);
+
+    Optional<Chat> addMessageToChat(int id, Message message);
+    Optional<Chat> addTagToChat(int id, String tag);
+
+    Optional<Chat> updateChatPrivacy(int id, Privacy privacy);
 
 }
