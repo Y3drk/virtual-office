@@ -12,6 +12,7 @@ import pl.agh.virtualoffice.backend.users.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -30,17 +31,6 @@ public class ChatServiceImpl implements ChatService {
         this.userService = userService;
     }
 
-
-//    @Override
-//    public List<Chat> getChatsByUser(User user) {
-//        List<Message> messages = messageRepository.getAllBySenderUser(user);
-//        return chatRepository.getAllByMessagesContaining(messages);
-//    }
-
-    @Override
-    public List<Chat> getChatsByTag(String tag) {
-        return chatRepository.getAllByTagsContaining(tag);
-    }
 
     @Override
     public Optional<Chat> getChatById(int ID) {
@@ -65,20 +55,19 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Optional<Chat> addMessageToChat(int id, int senderId, String message) {
         User sender = userService.getUserById(senderId).orElseThrow(() -> new IllegalStateException("No such user"));
+        Chat chat = chatRepository.findById(id).orElseThrow(() -> new IllegalStateException("No such chat"));
 
-        Message saveMessage = messageRepository.save(new Message(sender, message));
-        Optional<Chat> chatOptional = chatRepository.findById(id);
-        return chatOptional.map(chat -> {
-            chat.addMessage(saveMessage);
-            return chatRepository.save(chat);
-        });
+        Message newMessage = new Message(sender, message, chat);
+        Message savedMessage = messageRepository.save(newMessage);
+        chat.addMessage(savedMessage);
+        return Optional.of(chatRepository.save(chat));
     }
 
     @Override
     public Optional<Chat> addTagToChat(int id, String tag) {
         Optional<Chat> chatOptional = chatRepository.findById(id);
         return chatOptional.map(chat -> {
-            chat.addTag(tag);
+            chat.setTag(tag);
             return chatRepository.save(chat);
         });
     }
@@ -91,5 +80,14 @@ public class ChatServiceImpl implements ChatService {
             chat.setPrivacy(privacy);
             return chatRepository.save(chat);
         });
+    }
+
+    public String getChatMessages(int chatId){
+        return chatRepository.findById(chatId).orElseThrow(() -> new IllegalStateException("No such chat"))
+                        .getMessages()
+                        .stream()
+                        .map(message -> "user" +
+                                message.getSenderUser().getId() + ": " + message.getText())
+                .collect(Collectors.joining(" "));
     }
 }

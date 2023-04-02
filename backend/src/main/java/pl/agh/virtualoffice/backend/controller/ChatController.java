@@ -20,13 +20,13 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @GetMapping("{chatId}")
-    @ResponseBody
-    public Chat getChat(@PathVariable int chatId) {
-        return chatService.getChatById(chatId).
-                orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Chat not found"));
-    }
+//    @GetMapping("{chatId}")
+//    @ResponseBody
+//    public Chat getChat(@PathVariable int chatId) {
+//        return chatService.getChatById(chatId).
+//                orElseThrow(() -> new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, "Chat not found"));
+//    }
 
     @GetMapping
     @ResponseBody
@@ -37,18 +37,25 @@ public class ChatController {
         return chatService.getChatsByPrivacy(privacy);
     }
 
-//    @PostMapping
-//    @ResponseBody
-//    public Chat createNewChat(@RequestBody Chat chat) {
-//        return chatService.addChat(chat);
-//    }
-//
-//    @PutMapping("{chatId}")
-//    @ResponseBody
-//    public Chat addTagToChat(@PathVariable int chatId,
-//                             @RequestParam String tag) {
-//        return chatService.addTagToChat(chatId, tag).
-//                orElseThrow(() -> new ResponseStatusException(
-//                HttpStatus.NOT_FOUND, "Chat not found"));
-//    }
+    @PostMapping
+    @ResponseBody
+    public Chat createNewChat(@RequestBody Chat chat) {
+        return chatService.addChat(chat);
+    }
+
+    @PutMapping("{chatId}")
+    @ResponseBody
+    public Chat addMessageToChat(@PathVariable int chatId,
+                                 @RequestBody String string) {
+        return chatService.addMessageToChat(chatId,13, string).
+                orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Chat not found"));
+    }
+
+    @GetMapping("{chatId}")
+    @ResponseBody
+    public String getMessagesFromChat(@PathVariable int chatId) {
+        return chatService.getChatMessages(chatId);
+    }
+
 }

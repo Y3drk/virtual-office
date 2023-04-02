@@ -11,8 +11,6 @@ import java.util.Optional;
 
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
-    List<Chat> getAllByTagsContaining(String tags);
-//    List<Chat> getAllByMessagesContaining(List<Message> messages);
     Optional<Chat> getAllById(int ID);
     List<Chat> getAllByPrivacy(Privacy privacy);
 

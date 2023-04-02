@@ -10,10 +10,6 @@ import java.util.Optional;
 
 public interface ChatService {
 
-//    List<Chat> getChatsByUser(User user);
-
-    List<Chat> getChatsByTag(String tag);
-
     Optional<Chat> getChatById(int ID);
 
     List<Chat> getChatsByPrivacy(Privacy privacy);
@@ -22,9 +18,11 @@ public interface ChatService {
 
     Chat addChat(Chat chat);
 
-    public Optional<Chat> addMessageToChat(int id, int senderId, String message);
+    Optional<Chat> addMessageToChat(int id, int senderId, String message);
     Optional<Chat> addTagToChat(int id, String tag);
 
     Optional<Chat> updateChatPrivacy(int id, Privacy privacy);
+
+    String getChatMessages(int id);
 
 }
