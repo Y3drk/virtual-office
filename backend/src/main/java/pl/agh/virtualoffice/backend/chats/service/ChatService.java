@@ -10,10 +10,6 @@ import java.util.Optional;
 
 public interface ChatService {
 
-//    List<Chat> getChatsByUser(User user);
-
-    List<Chat> getChatsByTag(String tag);
-
     Optional<Chat> getChatById(int ID);
 
     List<Chat> getChatsByPrivacy(Privacy privacy);

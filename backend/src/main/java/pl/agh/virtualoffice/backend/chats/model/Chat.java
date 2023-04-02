@@ -13,8 +13,7 @@ public class Chat {
 //    @Column(name = "chat_id")
     private int id;
 
-    @ElementCollection
-    private List<String> tags;
+    private String tag;
 
     private Privacy privacy;
 
@@ -26,7 +25,7 @@ public class Chat {
     }
 
     public Chat(Privacy privacy) {
-        this.tags = List.of("TAG-NO-TAG");
+        this.tag = "noTag";
         this.privacy = privacy;
         this.messages = new ArrayList<>();
     }
@@ -39,20 +38,12 @@ public class Chat {
         this.privacy = privacy;
     }
 
-    public List<String> getTags() {
-        return tags;
+    public String getTag() {
+        return tag;
     }
 
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
-    public void addTag(String tag) {
-        if (this.tags.size() == 1 && this.tags.contains("TAG-NO-TAG")) {
-            this.tags = List.of(tag);
-        } else {
-            this.tags.add(tag);
-        }
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public List<Message> getMessages() {

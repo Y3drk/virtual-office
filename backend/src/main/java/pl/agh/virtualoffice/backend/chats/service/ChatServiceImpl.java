@@ -31,17 +31,6 @@ public class ChatServiceImpl implements ChatService {
     }
 
 
-//    @Override
-//    public List<Chat> getChatsByUser(User user) {
-//        List<Message> messages = messageRepository.getAllBySenderUser(user);
-//        return chatRepository.getAllByMessagesContaining(messages);
-//    }
-
-    @Override
-    public List<Chat> getChatsByTag(String tag) {
-        return chatRepository.getAllByTagsContaining(tag);
-    }
-
     @Override
     public Optional<Chat> getChatById(int ID) {
         return chatRepository.getAllById(ID);
@@ -79,7 +68,7 @@ public class ChatServiceImpl implements ChatService {
     public Optional<Chat> addTagToChat(int id, String tag) {
         Optional<Chat> chatOptional = chatRepository.findById(id);
         return chatOptional.map(chat -> {
-            chat.addTag(tag);
+            chat.setTag(tag);
             return chatRepository.save(chat);
         });
     }
