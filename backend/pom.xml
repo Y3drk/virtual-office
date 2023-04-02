@@ -77,7 +77,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.theokanning.openai-gpt3-java</groupId>
+			<artifactId>api</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+
+	</dependencies>
 
 	<build>
 		<plugins>
