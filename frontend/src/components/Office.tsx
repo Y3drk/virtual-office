@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import locations from "../assets/locations.json";
-import {ClientsideUser} from "../other/UserDatamodel";
+import {ClientsideUser, UserStatus} from "../other/UserDatamodel";
 import {PopUp} from "./PopUp";
 import {Backdrop} from "./Backdrop";
 import image from "../assets/office_5.jpg";
 
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { User } from "../types";
-import { putUser } from "../config";
-import { Button } from "../styles";
+import {Link, Outlet, useNavigate} from "react-router-dom";
+import {User} from "../types";
+import {getUsers, putUser} from "../config";
+import {Button} from "../styles";
 
 interface MovementProps {
-  left: number;
-  top: number;
+    left: number;
+    top: number;
 }
 
 const USER_PROXIMITY_RANGE = 70;
@@ -33,37 +33,47 @@ export function Office() {
     const archive = places[0];
     const desks = places.slice(1);
 
-    const currentMockUser: ClientsideUser = {user_id: 5, nickname: "Kotek Erjotek", position: [0,0], spawningPoint: 4, status: "Coding"};
+    const [currentMappedUser, setCurrentMappedUser] = useState<ClientsideUser | null>(null);
 
-    const [userLeft, setUserLeft] = useState(desks[currentMockUser.spawningPoint].center[0]);
-    const [userTop, setUserTop] = useState(desks[currentMockUser.spawningPoint].center[1]);
+    const [userLeft, setUserLeft] = useState(0);
+    const [userTop, setUserTop] = useState(0);
 
-    console.log(userLeft, userTop);
+    const [clientsideUsers, setClientsideUsers] = useState<ClientsideUser[]>([]);
+
+    const [othersLeft, setOthersLeft] = useState(clientsideUsers.map((otherUser) => otherUser.position[0]));
+    const [othersTop, setOthersTop] = useState(clientsideUsers.map((otherUser) => otherUser.position[1]));
 
     const [popUpIsOpen, setPopUpIsOpen] = useState(false);
 
-    //some pop-up props are needed!
+    const getLoggedUsers = async () => {
+        const loggedInUser = sessionStorage.getItem("user");
+        const users = await getUsers("LOGGED");
 
-    const fakeUsers: ClientsideUser[] = [
-        {user_id: 1, nickname: "pajac", status: "Need help", position: [70, 70], spawningPoint: 0},
-        {user_id: 2, nickname: "debil", status: "I'm busy!", position: [140, 140], spawningPoint: 1},
-        {user_id: 3, nickname: "i", status: "Need help", position: [210, 210], spawningPoint: 2},
-        {user_id: 4, nickname: "dureń", status: "Coding", position: [280, 280], spawningPoint: 3}
-    ];
+        if (loggedInUser) {
+            const parsedLoggedIn = JSON.parse(loggedInUser);
 
-    const [othersLeft, setOthersLeft] = useState(fakeUsers.map((otherUser) => otherUser.position[0]));
-    const [othersTop, setOthersTop] = useState(fakeUsers.map((otherUser) => otherUser.position[1]));
+            setCurrentMappedUser({...parsedLoggedIn, spawningPoint: 0, position: [0,0]});
+            const tmp = mapDBUsersToClientside(users, parsedLoggedIn);
+            setClientsideUsers(tmp);
+        }
+    };
 
-    const [currentUser, setCurrrentUser] = useState<User | null>(null);
+    const mapDBUsersToClientside = (users: User[], currentUser2: User) => {
+        const results: ClientsideUser[] = []
+        users.map((user, index) => { if (user.name !== currentUser2.name) {
+            results.push({...user, spawningPoint: index, position: [0,0]})
+        }})
+        return results;
+    };
 
     const navigate = useNavigate();
-  
+
     const logoutUser = async () => {
-      if (currentUser) {
-        const response = await putUser(currentUser.id, "NOT_LOGGED");
-        navigate("..");
-        return response;
-      }
+        if (currentMappedUser) {
+            const response = await putUser(currentMappedUser.id, "NOT_LOGGED");
+            navigate("..");
+            return response;
+        }
     };
 
 
@@ -71,15 +81,16 @@ export function Office() {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     };
 
-    const closePopUp = () => { setPopUpIsOpen(false);}
+    const closePopUp = () => {
+        setPopUpIsOpen(false);
+    }
 
     const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        console.log(userLeft, userTop);
         let newPosition = 0;
         switch (event.code) {
             case "ArrowUp":
                 newPosition = userTop - MOVE_BY;
-                if ( newPosition >= 0) {
+                if (newPosition >= 0) {
                     setUserTop(() => newPosition);
                 }
                 break;
@@ -108,48 +119,48 @@ export function Office() {
     };
 
     useEffect(() => {
-      const loggedInUser = sessionStorage.getItem("user");
-      if (loggedInUser) {
-        const parsedLoggedIn = JSON.parse(loggedInUser);
-        setCurrrentUser(parsedLoggedIn);
-      }
-    }, []);
+        console.log('bbb')
+        getLoggedUsers()
+    }, [])
 
-    
+
     useEffect(() => {
-      for (let otherUserIndex in fakeUsers) {
-          if (euklidean_distance(userLeft, userTop, othersLeft[otherUserIndex], othersTop[otherUserIndex]) < USER_PROXIMITY_RANGE) {
-              setPopUpIsOpen(true);
-          }
-      }
+        for (let otherUserIndex in clientsideUsers) {
+            console.log("other user location:", othersLeft[otherUserIndex], othersTop[otherUserIndex]);
+            if (euklidean_distance(userLeft, userTop, othersLeft[otherUserIndex], othersTop[otherUserIndex]) < USER_PROXIMITY_RANGE) {
+                setPopUpIsOpen(true);
+            }
+        }
 
-      if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
-          setPopUpIsOpen(true);
-      }
-  }, [userLeft, userTop, othersLeft, othersTop]);
+        if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
+            setPopUpIsOpen(true);
+        }
+    }, [userLeft, userTop, othersLeft, othersTop]);
 
     return (
-      <>
-      { currentUser &&
-        (<GeneralContainer>
-            <DataRow>
-            <h3>User from local storage: {currentUser.name}</h3>
-            <Button onClick={logoutUser}>Logout</Button>
-          </DataRow>
-            <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
-                {fakeUsers.map((user, index) => <OthersCircle key={user.user_id} left={othersLeft[index]}
-                                                              top={othersTop[index]}>{user.nickname}
-                </OthersCircle>)}
-                <UserCircle top={userTop} left={userLeft}>{currentMockUser.nickname.toUpperCase()}</UserCircle>
-            </OfficeContainer>
-            {popUpIsOpen && <><PopUp onClose={closePopUp} type="chat"/><Backdrop onClick={closePopUp}/></>}
-            <Link to="chat">
-              <ChatButton>Click</ChatButton>
-            </Link>
-            <Outlet />
-        </GeneralContainer>
-    )}
-    </>);
+        <>
+            {currentMappedUser &&
+                (<GeneralContainer>
+                        <DataRow>
+                            <h3>User from local storage: {currentMappedUser.name}</h3>
+                            <Button onClick={logoutUser}>Logout</Button>
+                            <Link to="chat">
+                                <ChatButton>Click</ChatButton>
+                            </Link>
+                            <Outlet/>
+                        </DataRow>
+                        <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
+                            {clientsideUsers.map((user, index) => <OthersCircle key={user.id}
+                                                                                left={othersLeft[index]}
+                                                                                top={othersTop[index]}>{user.name}
+                            </OthersCircle>)}
+                            <UserCircle top={userTop}
+                                        left={userLeft}>{currentMappedUser.name.toUpperCase()}</UserCircle>
+                        </OfficeContainer>
+                        {popUpIsOpen && <><PopUp onClose={closePopUp} type="chat"/><Backdrop onClick={closePopUp}/></>}
+                    </GeneralContainer>
+                )}
+        </>);
 
 };
 

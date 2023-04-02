@@ -1,9 +1,17 @@
-export type UserStatus = "Need help" | "Coding" | "I'm busy!";
+import {User, UserState} from "../types";
 
-export type ClientsideUser = {
-  user_id: number;
-  nickname: string;
-  spawningPoint: 0 | 1 | 2 | 3 | 4;
+export enum UserStatus {
+  NEED_HELP = "Need help",
+  CODING = "Coding",
+  BUSY = "I'm busy!",
+  AFK = "AFK"
+}
+
+export interface ClientsideUser {
+  id: number;
+  name: string;
+  state: UserState;
+  spawningPoint: number;
   position: number[];
-  status: UserStatus;
+  // status: UserStatus;
 };

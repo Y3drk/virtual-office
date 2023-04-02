@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import type { User, UserState } from "../types";
 import { getUsers, putUser } from "../config";
 import { Button, ButtonLink } from "../styles";
