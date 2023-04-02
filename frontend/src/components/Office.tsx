@@ -1,12 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
 import locations from "../assets/locations.json";
-// import {ClientsideUser, UserStatus} from "../other/UserDatamodel";
-import { PopUp, PopUpType } from "./PopUp";
-import { Backdrop } from "./Backdrop";
 import image from "../assets/office_5.jpg";
 
 import { Link, Outlet, useNavigate } from "react-router-dom";
+// import {ClientsideUser} from "../other/UserDatamodel";
+import { Backdrop } from "./Backdrop";
+
+import {
+  StompSessionProvider, useStompClient,
+  useSubscription
+} from "react-stomp-hooks";
+import { json } from "stream/consumers";
+
+import { PopUp, PopUpType } from "./PopUp";
+
 import { UserWithPositions, User } from "../types";
 import { getUsers, putUser } from "../config";
 import { Button } from "../styles";
@@ -35,13 +43,13 @@ export function Office() {
   const desks = places.slice(1);
 
   const [currentMappedUser, setCurrentMappedUser] = useState<UserWithPositions | null>(
-    null,
+    null
   );
 
   const [userLeft, setUserLeft] = useState(0);
   const [userTop, setUserTop] = useState(0);
 
-const [popUpType, setPopUpType] = useState<PopUpType>("chat");
+  const [popUpType, setPopUpType] = useState<PopUpType>("chat");
 
   const [clientsideUsers, setClientsideUsers] = useState<UserWithPositions[]>([]);
 
@@ -51,6 +59,11 @@ const [popUpType, setPopUpType] = useState<PopUpType>("chat");
   const [popUpIsOpen, setPopUpIsOpen] = useState(false);
 
   const [settingsIsOpen, setSettingsIsOpen] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+
+  let clientRef: { sendMessage: (arg0: string, arg1: string | Object) => void; } | null = null;
 
   const getLoggedUsers = async () => {
     const loggedInUser = sessionStorage.getItem("user");
@@ -62,10 +75,11 @@ const [popUpType, setPopUpType] = useState<PopUpType>("chat");
       setCurrentMappedUser({ ...parsedLoggedIn, spawningPoint: 0, position: [0, 0] });
       const tmp = mapDBUsersToClientside(users, parsedLoggedIn);
       setClientsideUsers(tmp);
-      setOthersLeft(tmp.map((user, index) => desks[index].center[0]));
-      setOthersTop(tmp.map((user, index) => desks[index].center[1]));
+      setOthersLeft(tmp.map((user, index) => desks[user.id].center[0]));
+      setOthersTop(tmp.map((user, index) => desks[user.id].center[1]));
     }
   };
+
 
   const mapDBUsersToClientside = (users: User[], currentUser2: User) => {
     const results: UserWithPositions[] = [];
@@ -77,21 +91,40 @@ const [popUpType, setPopUpType] = useState<PopUpType>("chat");
     return results;
   };
 
-  const navigate = useNavigate();
-
   const logoutUser = async () => {
     if (currentMappedUser) {
       const response = await putUser(currentMappedUser.id, {
         data: "NOT_LOGGED",
-        field: "state",
+        field: "state"
       });
       navigate("..");
       return response;
     }
   };
 
-  const euklidean_distance = (x1: number, y1: number, x2: number, y2: number): number => {
-    return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+
+  const parseCoordinatesToJson = (x: number, y: number, id: number) => {
+    return JSON.stringify({ xCoordinate: x, yCoordinate: y, userId: id });
+  };
+
+  const parseResponse = (body: string) => {
+    const newLefts = [];
+    const newTops = [];
+    const jsonObj = JSON.parse(body);
+    for (let idx in jsonObj) {
+      if (parseInt(idx) != currentMappedUser?.id) {
+        // console.log("Whole object", jsonObj[idx]);
+        // console.log("id from json | curr user:", idx, currentMappedUser?.id);
+        // console.log("Try of xCoordinate", jsonObj[idx].xcoordinate);
+        // console.log(jsonObj[idx].yCoordinate, jsonObj[idx].xCoordinate);
+        newLefts.push(jsonObj[idx].xcoordinate);
+        newTops.push(jsonObj[idx].ycoordinate);
+      }
+    }
+    if (newLefts.length > clientsideUsers.length) { //should happen once
+      getLoggedUsers();
+    }
+    return [newLefts, newTops];
   };
 
   const closePopUp = () => {
@@ -100,6 +133,7 @@ const [popUpType, setPopUpType] = useState<PopUpType>("chat");
 
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
     let newPosition = 0;
+
     switch (event.code) {
       case "ArrowUp":
         newPosition = userTop - MOVE_BY;
@@ -114,18 +148,13 @@ const [popUpType, setPopUpType] = useState<PopUpType>("chat");
           setUserTop(() => newPosition);
         }
         break;
+
       case "ArrowLeft":
         newPosition = userLeft - MOVE_BY;
         if (newPosition >= 0) {
           setUserLeft(() => newPosition);
         }
         break;
-
-    //     if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
-    //         setPopUpIsOpen(true);
-    //         setPopUpType("archive");
-    //     }
-    // }, [userLeft, userTop, othersLeft, othersTop]);
 
       case "ArrowRight":
         newPosition = userLeft + MOVE_BY;
@@ -136,98 +165,134 @@ const [popUpType, setPopUpType] = useState<PopUpType>("chat");
     }
   };
 
+  const euklidean_distance = (x1: number, y1: number, x2: number, y2: number): number => {
+    return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+  };
+
   useEffect(() => {
     getLoggedUsers();
   }, []);
 
   useEffect(() => {
     if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
-        setPopUpIsOpen(true);
-        setPopUpType("archive");
+      setPopUpIsOpen(true);
+      setPopUpType("archive");
     }
+
     for (let idx in clientsideUsers) {
-        console.log(clientsideUsers);
-        if (euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) < USER_PROXIMITY_RANGE) {
-            setPopUpIsOpen(true);
-            setPopUpType("chat");
-        }
+      if (euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) < USER_PROXIMITY_RANGE) {
+        setPopUpIsOpen(true);
+        setPopUpType("chat");
+      }
     }
-  }, [userLeft, userTop, othersLeft, othersTop])
 
-    // useEffect(() => {
-    //     for (let idx in clientsideUsers) {
-    //         if (euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) < USER_PROXIMITY_RANGE) {
-    //             setPopUpIsOpen(true);
-    //             setPopUpType("chat");
-    //         }
+  }, [userLeft, userTop, othersLeft, othersTop]);
 
-
-    //     if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
-    //         setPopUpIsOpen(true);
-    //         setPopUpType("archive");
-    //     }
-    // }, [userLeft, userTop, othersLeft, othersTop]);
-    //     }
-//   useEffect(() => {
-//     for (let idx in clientsideUsers) {
-//       if (
-//         euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) <
-//         USER_PROXIMITY_RANGE
-//       ) {
-//         setPopUpIsOpen(true);
-//       }
-//     }
-
-//     if (
-//       euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) <
-//       OBJECT_PROXIMITY_RANGE
-//     ) {
-//       setPopUpIsOpen(true);
-//     }
-//   }, [userLeft, userTop, othersLeft, othersTop]);
 
   return (
     <>
-      {currentMappedUser && (
-        <GeneralContainer>
-          <DataRow>
-            <h3>User from local storage: {currentMappedUser.name}</h3>
-            <Button onClick={logoutUser}>Logout</Button>
-          </DataRow>
-          <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
-            {clientsideUsers.map((user, index) => (
-              <UserSpace top={othersTop[index]} left={othersLeft[index]} key={user.id}>
-                <UserSettings>{user.status}</UserSettings>
-                <OthersCircle>{user.name}</OthersCircle>
-              </UserSpace>
-            ))}
-            <UserSpace top={userTop} left={userLeft}>
-              <UserSettings onClick={() => setSettingsIsOpen(true)}>
-                {currentMappedUser.status}
-              </UserSettings>
-              <UserCircle>{currentMappedUser.name.toUpperCase()}</UserCircle>
-            </UserSpace>
-          </OfficeContainer>
-          {popUpIsOpen && (
-            <>
+      {currentMappedUser &&
+        (
+          <StompSessionProvider
+            url={"http://localhost:8080/socket"}
+            // debug={STOMP => console.log({STOMP})}
+            // onConnect={() => console.log({STOMP_CONNECT: 'TCP connection successfully established'})}
+          >
+            <GeneralContainer>
+              <DataRow>
+                <h3>User from local storage: {currentMappedUser.name}</h3>
+                <Button onClick={logoutUser}>Logout</Button>
+                <Link to="chat">
+                  <ChatButton>Click</ChatButton>
+                </Link>
+                <Outlet />
+              </DataRow>
+              <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
+                {clientsideUsers.map((user, index) => (
+                  <UserSpace top={othersTop[index]} left={othersLeft[index]} key={user.id}>
+                    <UserSettings>{user.status}</UserSettings>
+                    <OthersCircle>{user.name}</OthersCircle>
+                  </UserSpace>
+                ))}
+                <UserSpace top={userTop} left={userLeft}>
+                  <UserSettings onClick={() => setSettingsIsOpen(true)}>
+                    {currentMappedUser.status}
+                  </UserSettings>
+                  <UserCircle>{currentMappedUser.name.toUpperCase()}</UserCircle>
+                </UserSpace>
+              </OfficeContainer>
+              {popUpIsOpen && <><PopUp type={popUpType} onClose={closePopUp} /><Backdrop onClick={closePopUp} /></>}
+              {settingsIsOpen && (
+                <UserSettingsPopUp
+                  onClose={() => {
+                    setSettingsIsOpen(false);
+                    getLoggedUsers();
+                  }}
+                  user={currentMappedUser}
+                />
+              )}
+            </GeneralContainer>
+            <SendingComponent parser={parseCoordinatesToJson} userLeft={userLeft} userTop={userTop}
+                              userId={currentMappedUser?.id} />
+            <SubscribingComponent parser={parseResponse} setOthersLeft={setOthersLeft} setOthersTop={setOthersTop} />
+          </StompSessionProvider>
+        )}
+    </>);
+};
 
-                                    <PopUp type={popUpType} onClose={closePopUp} />              <Backdrop onClick={closePopUp} />
-            </>
-          )}
-          {settingsIsOpen && (
-            <UserSettingsPopUp
-              onClose={() => {
-                setSettingsIsOpen(false);
-                getLoggedUsers();
-              }}
-              user={currentMappedUser}
-            />
-          )}
-        </GeneralContainer>
-      )}
-    </>
-  );
+export type SenderProps = {
+  userLeft: number;
+  userTop: number;
+  userId: number;
+  parser: (x: number, y: number, id: number) => string;
 }
+
+export type SubscriberProps = {
+  setOthersLeft: Dispatch<SetStateAction<number[]>>;
+  setOthersTop: Dispatch<SetStateAction<number[]>>;
+  parser: (body: string) => number[][];
+}
+
+
+const SendingComponent = (props: SenderProps) => {
+  const stompClient = useStompClient();
+
+  const sendMessage = () => {
+    // console.log("SENDING");
+    // console.log(props.parser(props.userLeft, props.userTop, props.userId));
+    if (stompClient) {
+      //Send Message
+      stompClient.publish({
+        destination: "/app/positions",
+        body: props.parser(props.userLeft, props.userTop, props.userId)
+      });
+    } else {
+      console.log("error");
+    }
+  };
+
+  useEffect(() => {
+    sendMessage();
+  }, [props.userLeft, props.userTop]);
+
+  return <></>;
+
+};
+
+const SubscribingComponent = (props: SubscriberProps) => {
+
+  useSubscription("/topic/positions", (message) => {
+    // console.log("RECEIVED:", message.body);
+    const newCords = props.parser(message.body);
+    console.log("Parsed new Cords", newCords);
+    props.setOthersLeft(newCords[0]);
+    props.setOthersTop(newCords[1]);
+  });
+
+  return (
+    <></>
+  );
+};
 
 const DataRow = styled.div`
   margin-bottom: 30px;
