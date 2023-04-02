@@ -9,6 +9,7 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ClientsideUser, User } from "../types";
 import { getUsers, putUser } from "../config";
 import { Button } from "../styles";
+import { UserSettingsPopUp } from "./UserSettingsPopUp";
 
 interface MovementProps {
   left: number;
@@ -44,6 +45,8 @@ export function Office() {
 
   const [popUpIsOpen, setPopUpIsOpen] = useState(false);
 
+  const [settingsIsOpen, setSettingsIsOpen] = useState<boolean>(false);
+
   const getLoggedUsers = async () => {
     const loggedInUser = sessionStorage.getItem("user");
     const users = await getUsers("LOGGED");
@@ -73,7 +76,10 @@ export function Office() {
 
   const logoutUser = async () => {
     if (currentMappedUser) {
-      const response = await putUser(currentMappedUser.id, "NOT_LOGGED");
+      const response = await putUser(currentMappedUser.id, {
+        data: "NOT_LOGGED",
+        field: "state",
+      });
       navigate("..");
       return response;
     }
@@ -122,7 +128,7 @@ export function Office() {
 
   useEffect(() => {
     getLoggedUsers();
-  }, []);
+  }, [currentMappedUser]);
 
   useEffect(() => {
     for (let idx in clientsideUsers) {
@@ -156,19 +162,36 @@ export function Office() {
           </DataRow>
           <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
             {clientsideUsers.map((user, index) => (
-              <OthersCircle key={user.id} left={othersLeft[index]} top={othersTop[index]}>
-                {user.name}
-              </OthersCircle>
+              <div>
+                <OthersCircle
+                  key={user.id}
+                  left={othersLeft[index]}
+                  top={othersTop[index]}
+                >
+                  {user.name}
+                </OthersCircle>
+              </div>
             ))}
-            <UserCircle top={userTop} left={userLeft}>
-              {currentMappedUser.name.toUpperCase()}
-            </UserCircle>
+            <UserSpace top={userTop} left={userLeft}>
+              <UserSettings onClick={() => setSettingsIsOpen(true)}>
+                {currentMappedUser.status}
+              </UserSettings>
+              <UserCircle>{currentMappedUser.name.toUpperCase()}</UserCircle>
+            </UserSpace>
           </OfficeContainer>
           {popUpIsOpen && (
             <>
               <PopUp onClose={closePopUp} type="chat" />
               <Backdrop onClick={closePopUp} />
             </>
+          )}
+          {settingsIsOpen && (
+            <UserSettingsPopUp
+              onClose={() => {
+                setSettingsIsOpen(false);
+              }}
+              user={currentMappedUser}
+            />
           )}
         </GeneralContainer>
       )}
@@ -180,7 +203,13 @@ const DataRow = styled.div`
   margin-bottom: 30px;
 `;
 
-export const UserCircle = styled.div<MovementProps>`
+const UserSpace = styled.div<MovementProps>`
+  position: absolute;
+  left: ${(props) => props.left}px;
+  top: ${(props) => props.top}px;
+`;
+
+export const UserCircle = styled.div`
   background: blue;
   width: ${AVATAR_SIZE}px;
   height: ${AVATAR_SIZE}px;
@@ -194,10 +223,23 @@ export const UserCircle = styled.div<MovementProps>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
 
-  position: absolute;
-  left: ${(props) => props.left}px;
-  top: ${(props) => props.top}px;
+const UserSettings = styled.button`
+  background: white;
+  width: ${AVATAR_SIZE}px;
+  height: ${AVATAR_SIZE / 2}px;
+  border: 2px solid black;
+  border-radius: 10px;
+
+  color: black;
+  font-size: 11px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const GeneralContainer = styled.div`

@@ -10,7 +10,7 @@ import pl.agh.virtualoffice.backend.users.model.User;
 import pl.agh.virtualoffice.backend.users.repository.UserRepository;
 
 import static pl.agh.virtualoffice.backend.users.model.State.NOT_LOGGED;
-import static pl.agh.virtualoffice.backend.users.model.UserStatus.AFK;
+import static pl.agh.virtualoffice.backend.users.model.Status.AFK;
 
 @Configuration
 public class InitialConfiguration {

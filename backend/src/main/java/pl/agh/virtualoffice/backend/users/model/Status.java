@@ -1,6 +1,6 @@
 package pl.agh.virtualoffice.backend.users.model;
 
-public enum UserStatus {
+public enum Status {
     NEED_HELP,
     CODING,
     IM_BUSY,

@@ -22,23 +22,23 @@ public class User {
     private State state;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private Status status;
 
     public User() {
     }
 
-    public User(String name, State state, UserStatus userStatus) {
+    public User(String name, State state, Status userStatus) {
         this.name = name;
         this.state = state;
-        this.userStatus = userStatus;
+        this.status = userStatus;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setStatus(Status userStatus) {
+        this.status = userStatus;
     }
 
     public String getName() {
