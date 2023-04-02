@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static pl.agh.virtualoffice.backend.users.model.State.NOT_LOGGED;
+import static pl.agh.virtualoffice.backend.users.model.UserStatus.AFK;
 
 @RestController
 @RequestMapping("/users")
@@ -47,7 +48,10 @@ public class UserController {
     @PostMapping
     @ResponseBody
     public List<User> addNewUsers(@RequestBody List<User> users) {
-        users.forEach(user -> user.setState(NOT_LOGGED));
+        users.forEach(user -> {
+            user.setState(NOT_LOGGED);
+            user.setUserStatus(AFK);
+        });
         return userService.clearAndAddNewUsers(users);
     }
 
