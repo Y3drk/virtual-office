@@ -10,6 +10,7 @@ import java.util.List;
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(name = "chat_id")
     private int id;
 
     @ElementCollection
@@ -17,7 +18,8 @@ public class Chat {
 
     private Privacy privacy;
 
-    @OneToMany
+    @OneToMany(mappedBy = "chat")
+//    @JoinColumn
     private List<Message> messages;
 
     public Chat() {

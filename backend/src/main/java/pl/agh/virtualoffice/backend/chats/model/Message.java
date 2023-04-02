@@ -15,10 +15,11 @@ public class Message {
 
     public Message() {}
 
-    public Message(User senderUser, String text) {
+    public Message(User senderUser, String text, Chat chat) {
         this.senderUser = senderUser;
         this.text = text;
         this.data = Date.from(Instant.now());
+        this.chat = chat;
     }
 
     @ManyToOne
@@ -28,6 +29,10 @@ public class Message {
 
     @Temporal(TemporalType.TIME)
     private Date data;
+
+    @ManyToOne
+//    @JoinColumn(name="chat_id")
+    private Chat chat;
 
     public Date getData() {
         return data;

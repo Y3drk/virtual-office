@@ -66,7 +66,8 @@ public class ChatServiceImpl implements ChatService {
     public Optional<Chat> addMessageToChat(int id, int senderId, String message) {
         User sender = userService.getUserById(senderId).orElseThrow(() -> new IllegalStateException("No such user"));
 
-        Message saveMessage = messageRepository.save(new Message(sender, message));
+        Message saveMessage = messageRepository.save(new Message(sender, message,
+                chatRepository.getAllById(id).orElseThrow(() -> new IllegalStateException("No such user"))));
         Optional<Chat> chatOptional = chatRepository.findById(id);
         return chatOptional.map(chat -> {
             chat.addMessage(saveMessage);

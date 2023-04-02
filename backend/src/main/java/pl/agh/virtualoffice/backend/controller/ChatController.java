@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.agh.virtualoffice.backend.chats.model.Chat;
+import pl.agh.virtualoffice.backend.chats.model.Message;
 import pl.agh.virtualoffice.backend.chats.model.Privacy;
 import pl.agh.virtualoffice.backend.chats.service.ChatService;
 
@@ -37,18 +38,18 @@ public class ChatController {
         return chatService.getChatsByPrivacy(privacy);
     }
 
-//    @PostMapping
-//    @ResponseBody
-//    public Chat createNewChat(@RequestBody Chat chat) {
-//        return chatService.addChat(chat);
-//    }
-//
-//    @PutMapping("{chatId}")
-//    @ResponseBody
-//    public Chat addTagToChat(@PathVariable int chatId,
-//                             @RequestParam String tag) {
-//        return chatService.addTagToChat(chatId, tag).
-//                orElseThrow(() -> new ResponseStatusException(
-//                HttpStatus.NOT_FOUND, "Chat not found"));
-//    }
+    @PostMapping
+    @ResponseBody
+    public Chat createNewChat(@RequestBody Chat chat) {
+        return chatService.addChat(chat);
+    }
+
+    @PutMapping("{chatId}")
+    @ResponseBody
+    public Chat addMessageToChat(@PathVariable int chatId,
+                             @RequestBody String string) {
+        return chatService.addMessageToChat(chatId,5, string).
+                orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Chat not found"));
+    }
 }
