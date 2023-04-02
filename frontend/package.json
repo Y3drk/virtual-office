@@ -26,12 +26,23 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
+  "devServer": {
+    "overlay": false
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
-  },
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
+  }
+},
   "browserslist": {
     "production": [
       ">0.2%",

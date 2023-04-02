@@ -1,14 +1,19 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import locations from "../assets/locations.json";
-import {User} from "../other/UserDatamodel";
+import {ClientsideUser} from "../other/UserDatamodel";
 import {PopUp} from "./PopUp";
 import {Backdrop} from "./Backdrop";
 import image from "../assets/office_5.jpg";
 
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { User } from "../types";
+import { putUser } from "../config";
+import { Button } from "../styles";
+
 interface MovementProps {
-    left: number;
-    top: number;
+  left: number;
+  top: number;
 }
 
 const USER_PROXIMITY_RANGE = 70;
@@ -28,10 +33,10 @@ export function Office() {
     const archive = places[0];
     const desks = places.slice(1);
 
-    const currentUser: User = {user_id: 5, nickname: "Kotek Erjotek", position: [0,0], spawningPoint: 4, status: "Coding"};
+    const currentMockUser: ClientsideUser = {user_id: 5, nickname: "Kotek Erjotek", position: [0,0], spawningPoint: 4, status: "Coding"};
 
-    const [userLeft, setUserLeft] = useState(desks[currentUser.spawningPoint].center[0]);
-    const [userTop, setUserTop] = useState(desks[currentUser.spawningPoint].center[1]);
+    const [userLeft, setUserLeft] = useState(desks[currentMockUser.spawningPoint].center[0]);
+    const [userTop, setUserTop] = useState(desks[currentMockUser.spawningPoint].center[1]);
 
     console.log(userLeft, userTop);
 
@@ -39,7 +44,7 @@ export function Office() {
 
     //some pop-up props are needed!
 
-    const fakeUsers: User[] = [
+    const fakeUsers: ClientsideUser[] = [
         {user_id: 1, nickname: "pajac", status: "Need help", position: [70, 70], spawningPoint: 0},
         {user_id: 2, nickname: "debil", status: "I'm busy!", position: [140, 140], spawningPoint: 1},
         {user_id: 3, nickname: "i", status: "Need help", position: [210, 210], spawningPoint: 2},
@@ -49,24 +54,24 @@ export function Office() {
     const [othersLeft, setOthersLeft] = useState(fakeUsers.map((otherUser) => otherUser.position[0]));
     const [othersTop, setOthersTop] = useState(fakeUsers.map((otherUser) => otherUser.position[1]));
 
+    const [currentUser, setCurrrentUser] = useState<User | null>(null);
+
+    const navigate = useNavigate();
+  
+    const logoutUser = async () => {
+      if (currentUser) {
+        const response = await putUser(currentUser.id, "NOT_LOGGED");
+        navigate("..");
+        return response;
+      }
+    };
+
 
     const euklidean_distance = (x1: number, y1: number, x2: number, y2: number): number => {
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     };
 
     const closePopUp = () => { setPopUpIsOpen(false);}
-
-    useEffect(() => {
-        for (let otherUserIndex in fakeUsers) {
-            if (euklidean_distance(userLeft, userTop, othersLeft[otherUserIndex], othersTop[otherUserIndex]) < USER_PROXIMITY_RANGE) {
-                setPopUpIsOpen(true);
-            }
-        }
-
-        if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
-            setPopUpIsOpen(true);
-        }
-    }, [userLeft, userTop, othersLeft, othersTop]);
 
     const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         console.log(userLeft, userTop);
@@ -102,20 +107,55 @@ export function Office() {
         }
     };
 
+    useEffect(() => {
+      const loggedInUser = sessionStorage.getItem("user");
+      if (loggedInUser) {
+        const parsedLoggedIn = JSON.parse(loggedInUser);
+        setCurrrentUser(parsedLoggedIn);
+      }
+    }, []);
+
+    
+    useEffect(() => {
+      for (let otherUserIndex in fakeUsers) {
+          if (euklidean_distance(userLeft, userTop, othersLeft[otherUserIndex], othersTop[otherUserIndex]) < USER_PROXIMITY_RANGE) {
+              setPopUpIsOpen(true);
+          }
+      }
+
+      if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
+          setPopUpIsOpen(true);
+      }
+  }, [userLeft, userTop, othersLeft, othersTop]);
+
     return (
-        <GeneralContainer>
-            <h1>OFFICE</h1>
+      <>
+      { currentUser &&
+        (<GeneralContainer>
+            <DataRow>
+            <h3>User from local storage: {currentUser.name}</h3>
+            <Button onClick={logoutUser}>Logout</Button>
+          </DataRow>
             <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
                 {fakeUsers.map((user, index) => <OthersCircle key={user.user_id} left={othersLeft[index]}
                                                               top={othersTop[index]}>{user.nickname}
                 </OthersCircle>)}
-                <UserCircle top={userTop} left={userLeft}>{currentUser.nickname.toUpperCase()}</UserCircle>
+                <UserCircle top={userTop} left={userLeft}>{currentMockUser.nickname.toUpperCase()}</UserCircle>
             </OfficeContainer>
             {popUpIsOpen && <><PopUp onClose={closePopUp} type="chat"/><Backdrop onClick={closePopUp}/></>}
+            <Link to="chat">
+              <ChatButton>Click</ChatButton>
+            </Link>
+            <Outlet />
         </GeneralContainer>
-    );
-}
+    )}
+    </>);
 
+};
+
+const DataRow = styled.div`
+  margin-bottom: 30px;
+`;
 
 export const UserCircle = styled.div<MovementProps>`
     background: blue;
@@ -180,3 +220,18 @@ export const OfficeContainer = styled.div`
   
 `;
 
+export const ChatButton = styled.div`
+  width: 5vw;
+  height: 3vh;
+  background: red;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.5;
+  }
+`;

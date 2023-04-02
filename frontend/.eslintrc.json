@@ -1,6 +1,6 @@
 {
     "env": {
-        "browser": true,
+        "browser": false,
         "es2021": true,
         "jest": true
     },
@@ -31,7 +31,15 @@
     ],
     "rules": {
         "react/react-in-jsx-scope": ["off"],
-        "react/jsx-props-no-spreading": ["warn"],
-        "react/no-unescaped-entities": ["off"]
+        "react/jsx-props-no-spreading": ["off"],
+        "react/no-unescaped-entities": ["off"],
+        "prettier/prettier": [
+            "error",
+            {
+              "endOfLine": "auto"
+            }
+          ],
+          "@typescript-eslint/no-unused-vars": "off"
+        
     }
 }

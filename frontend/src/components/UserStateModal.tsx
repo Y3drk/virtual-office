@@ -1,8 +1,8 @@
 import React from "react";
-import {User} from "../other/UserDatamodel";
+import {ClientsideUser} from "../other/UserDatamodel";
 
 export type UserStateModalProps = {
-  user: User;
+  user: ClientsideUser;
 };
 
 export const UserStateModal = () => {

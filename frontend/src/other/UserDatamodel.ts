@@ -1,6 +1,6 @@
 export type UserStatus = "Need help" | "Coding" | "I'm busy!";
 
-export type User = {
+export type ClientsideUser = {
   user_id: number;
   nickname: string;
   spawningPoint: 0 | 1 | 2 | 3 | 4;
