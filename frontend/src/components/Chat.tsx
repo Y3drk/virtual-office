@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { StyledTestDiv } from "../styles/StyledTestDiv";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 

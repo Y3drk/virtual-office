@@ -1,13 +1,25 @@
 import { USERS_URL } from ".";
-import { UserWithName, UserState } from "../types";
+import { UserWithName, UserState, UserStatus } from "../types";
 
 export const getUsers = async (state: UserState) => {
   const response = await fetch(`${USERS_URL}?state=${state}`);
   return await response.json();
 };
 
-export const putUser = async (id: number, state: UserState) => {
-  await fetch(`${USERS_URL}/${id}?state=${state}`, {
+type StateData = {
+  data: UserState;
+  field: "state";
+};
+
+type StatusData = {
+  data: UserStatus;
+  field: "status";
+};
+
+type Data = StateData | StatusData;
+
+export const putUser = async (id: number, data: Data) => {
+  await fetch(`${USERS_URL}/${id}/${data.field}?${data.field}=${data.data}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

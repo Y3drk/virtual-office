@@ -1,8 +1,9 @@
 package pl.agh.virtualoffice.backend.users.service;
 
 import pl.agh.virtualoffice.backend.users.model.State;
+import pl.agh.virtualoffice.backend.users.model.Status;
 import pl.agh.virtualoffice.backend.users.model.User;
-import pl.agh.virtualoffice.backend.users.model.UserStatus;
+import pl.agh.virtualoffice.backend.users.model.Status;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +18,5 @@ public interface UserService {
 
     Optional<User> updateUserState(int id, State state);
 
-    Optional<User> updateUserStatus(int id, UserStatus status);
+    Optional<User> updateUserStatus(int id, Status status);
 }
