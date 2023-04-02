@@ -22,7 +22,7 @@ public interface ChatService {
 
     Chat addChat(Chat chat);
 
-    Optional<Chat> addMessageToChat(int id, Message message);
+    public Optional<Chat> addMessageToChat(int id, int senderId, String message);
     Optional<Chat> addTagToChat(int id, String tag);
 
     Optional<Chat> updateChatPrivacy(int id, Privacy privacy);

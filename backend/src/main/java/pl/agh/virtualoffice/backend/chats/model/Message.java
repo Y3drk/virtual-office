@@ -1,22 +1,32 @@
 package pl.agh.virtualoffice.backend.chats.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import pl.agh.virtualoffice.backend.users.model.User;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity(name = "message")
 public class Message {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    public Message() {}
+
+    public Message(User senderUser, String text) {
+        this.senderUser = senderUser;
+        this.text = text;
+        this.data = Date.from(Instant.now());
+    }
 
     @ManyToOne
     private User senderUser;
 
     private String text;
 
+    @Temporal(TemporalType.TIME)
     private Date data;
 
     public Date getData() {

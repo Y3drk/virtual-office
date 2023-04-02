@@ -19,8 +19,6 @@ public class Chat {
 
     @OneToMany
     private List<Message> messages;
-    @OneToMany
-    private List<User> users;
 
     public Chat() {
     }
@@ -28,6 +26,7 @@ public class Chat {
     public Chat(Privacy privacy) {
         this.tags = List.of("TAG-NO-TAG");
         this.privacy = privacy;
+        this.messages = new ArrayList<>();
     }
 
     public Privacy getPrivacy() {
@@ -52,14 +51,6 @@ public class Chat {
         } else {
             this.tags.add(tag);
         }
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 
     public List<Message> getMessages() {
