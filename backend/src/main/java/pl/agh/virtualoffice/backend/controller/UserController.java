@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.agh.virtualoffice.backend.users.model.State;
 import pl.agh.virtualoffice.backend.users.model.User;
 import pl.agh.virtualoffice.backend.users.positions.UserPositionProvider;
-import pl.agh.virtualoffice.backend.users.model.UserStatus;
+import pl.agh.virtualoffice.backend.users.model.Status;
 import pl.agh.virtualoffice.backend.users.service.UserService;
 import pl.agh.virtualoffice.backend.util.Position;
 
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static pl.agh.virtualoffice.backend.users.model.State.NOT_LOGGED;
+import static pl.agh.virtualoffice.backend.users.model.Status.AFK;
 
 @RestController
 @RequestMapping("/users")
@@ -47,11 +48,14 @@ public class UserController {
     @PostMapping
     @ResponseBody
     public List<User> addNewUsers(@RequestBody List<User> users) {
-        users.forEach(user -> user.setState(NOT_LOGGED));
+        users.forEach(user -> {
+            user.setState(NOT_LOGGED);
+            user.setStatus(AFK);
+        });
         return userService.clearAndAddNewUsers(users);
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/{userId}/state")
     @ResponseBody
     public User changeUserState(@PathVariable int userId, @RequestParam State state) {
         return userService.updateUserState(userId, state).orElseThrow(() -> new ResponseStatusException(
@@ -64,10 +68,10 @@ public class UserController {
         return userPositionProvider.getAllUsersPositions();
     }
 
-    @PutMapping("/status/{userId}")
+    @PutMapping("{userId}/status")
     @ResponseBody
-    public User changeUserStatus(@PathVariable int userId, @RequestParam UserStatus userStatus) {
-        return userService.updateUserStatus(userId, userStatus).orElseThrow(() -> new ResponseStatusException(
+    public User changeUserStatus(@PathVariable int userId, @RequestParam Status status) {
+        return userService.updateUserStatus(userId, status).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "User not found"));
     }
 }
