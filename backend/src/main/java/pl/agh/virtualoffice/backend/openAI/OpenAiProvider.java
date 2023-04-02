@@ -14,11 +14,12 @@ public class OpenAiProvider
 {
     private static final String OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
-    private final String apiKey = "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";
+    private final String apiKey = "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";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String generateTag(String content)
     {
+        System.out.println(content);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + apiKey);
