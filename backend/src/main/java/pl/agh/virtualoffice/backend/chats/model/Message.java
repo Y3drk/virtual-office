@@ -1,5 +1,6 @@
 package pl.agh.virtualoffice.backend.chats.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import pl.agh.virtualoffice.backend.users.model.User;
 
@@ -10,15 +11,16 @@ import java.util.Date;
 @Entity(name = "message")
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     public Message() {}
 
-    public Message(User senderUser, String text) {
+    public Message(User senderUser, String text, Chat chat) {
         this.senderUser = senderUser;
         this.text = text;
-        this.data = Date.from(Instant.now());
+        this.date = Date.from(Instant.now());
+        this.chat = chat;
     }
 
     @ManyToOne
@@ -27,14 +29,18 @@ public class Message {
     private String text;
 
     @Temporal(TemporalType.TIME)
-    private Date data;
+    private Date date;
+
+    @ManyToOne
+    @JsonIgnore
+    private Chat chat;
 
     public Date getData() {
-        return data;
+        return date;
     }
 
     public void setData(Date data) {
-        this.data = data;
+        this.date = data;
     }
 
     public String getText() {
