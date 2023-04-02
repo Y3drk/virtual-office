@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import locations from "../assets/locations.json";
 import {ClientsideUser, UserStatus} from "../other/UserDatamodel";
-import {PopUp} from "./PopUp";
+import {PopUp, PopUpType} from "./PopUp";
 import {Backdrop} from "./Backdrop";
 import image from "../assets/office_5.jpg";
 
@@ -38,8 +38,10 @@ export function Office() {
     const [userLeft, setUserLeft] = useState(0);
     const [userTop, setUserTop] = useState(0);
 
-    const [clientsideUsers, setClientsideUsers] = useState<ClientsideUser[]>([]);
+    const [popUpType, setPopUpType] = useState<PopUpType>("chat");
 
+
+    const [clientsideUsers, setClientsideUsers] = useState<ClientsideUser[]>([]);
     const [othersLeft, setOthersLeft] = useState<number[]>([]);
     const [othersTop, setOthersTop] = useState<number[]>([]);
 
@@ -129,11 +131,13 @@ export function Office() {
         for (let idx in clientsideUsers) {
             if (euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) < USER_PROXIMITY_RANGE) {
                 setPopUpIsOpen(true);
+                setPopUpType("chat");
             }
         }
 
         if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
             setPopUpIsOpen(true);
+            setPopUpType("archive");
         }
     }, [userLeft, userTop, othersLeft, othersTop]);
 
@@ -154,7 +158,7 @@ export function Office() {
                             <UserCircle top={userTop}
                                         left={userLeft}>{currentMappedUser.name.toUpperCase()}</UserCircle>
                         </OfficeContainer>
-                        {popUpIsOpen && <><PopUp onClose={closePopUp} type="chat"/><Backdrop onClick={closePopUp}/></>}
+                        {popUpIsOpen && <><PopUp type={popUpType} onClose={closePopUp} /><Backdrop onClick={closePopUp}/></>}
                     </GeneralContainer>
                 )}
         </>);
@@ -229,9 +233,10 @@ export const OfficeContainer = styled.div`
 `;
 
 export const ChatButton = styled.div`
-  width: 5vw;
-  height: 3vh;
-  background: red;
+  width: 6rem;
+  height: 20%;
+  margin-left: 40%;
+  background: green;
   color: white;
   display: flex;
   flex-direction: column;

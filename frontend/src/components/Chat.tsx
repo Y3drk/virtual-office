@@ -71,7 +71,7 @@ export const Chat = () => {
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 30vw;
+  width: 30rem;
   height: 30vh;
   background-color: #f0f0f0;
   justify-content: space-between;
@@ -158,9 +158,9 @@ export const ExitContainer = styled.div`
 `;
 
 export const Exit = styled.div`
-    width: 2vw;
-    height 2vw;
-    font-size: 1.2vw;
+    width: 1.2rem;
+    height 1.2rem;
+    font-size: 0.8rem;
     padding-top:0.5vw;
     text-align: center;
     border-radius: 5px;
