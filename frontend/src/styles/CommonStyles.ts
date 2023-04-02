@@ -8,6 +8,7 @@ export const Button = styled.button`
   text-align: center;
   font-weight: bold;
   color: white;
+  cursor: pointer;
 `;
 
 export const ButtonLink = styled(Link)`

@@ -1,0 +1,46 @@
+{
+  "locations": [
+    {
+      "name": "archive",
+      "center": [
+        770,
+        90
+      ]
+    },
+    {
+      "name": "desk_1",
+      "center": [
+        60,
+        355
+      ]
+    },
+    {
+      "name": "desk_2",
+      "center": [
+        1470,
+        355
+      ]
+    },
+    {
+      "name": "desk_3",
+      "center": [
+        450,
+        610
+      ]
+    },
+    {
+      "name": "desk_4",
+      "center": [
+        1230,
+        610
+      ]
+    },
+    {
+      "name": "desk_5",
+      "center": [
+        850,
+        610
+      ]
+    }
+  ]
+}
