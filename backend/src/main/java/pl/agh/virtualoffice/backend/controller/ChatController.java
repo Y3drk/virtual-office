@@ -1,4 +1,4 @@
-package pl.agh.virtualoffice.backend.controler;
+package pl.agh.virtualoffice.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
