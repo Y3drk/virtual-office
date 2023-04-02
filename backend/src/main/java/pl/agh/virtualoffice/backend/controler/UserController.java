@@ -25,6 +25,7 @@ import static pl.agh.virtualoffice.backend.users.model.State.NOT_LOGGED;
 @RequestMapping("/users")
 public class UserController {
 
+    public static final String NOT_LOGGED_STRING = "NOT_LOGGED";
     private final UserService userService;
 
     @Autowired
@@ -34,7 +35,7 @@ public class UserController {
 
     @GetMapping
     @ResponseBody
-    public List<User> getUsersByState(@RequestParam State state) {
+    public List<User> getUsersByState(@RequestParam(defaultValue = NOT_LOGGED_STRING) State state) {
         return userService.getUsersByState(state);
     }
 
