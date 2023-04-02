@@ -1,66 +1,89 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { User } from "../types";
+import type { User, UserState } from "../types";
+import { getUsers, putUser } from "../config";
+import { Button, ButtonLink } from "../styles";
+import styled from "styled-components";
 
 export const Login = () => {
   const [freeUsers, setFreeUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // save selected user to local storage
+  const getNotLoggedUsers = async () => {
+    const users = await getUsers("NOT_LOGGED");
+    console.log(users);
+    setFreeUsers(users);
+  };
+
   const handleUserSelected = (e: any) => {
-    localStorage.setItem("user", e.target.value);
-    setSelectedUser(e.target.value);
+    const user = JSON.parse(e.target.value);
+    setSelectedUser(user);
+  };
+
+  const logInUser = async () => {
+    if (selectedUser) {
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ ...selectedUser, state: "LOGGED" }),
+      );
+      return await putUser(selectedUser.id, "LOGGED");
+    }
   };
 
   useEffect(() => {
-    // basic data setup
-    const user1: User = {
-      id: 1,
-      name: "user1",
-      state: "inactive",
-    };
-
-    const user2: User = {
-      id: 2,
-      name: "user2",
-      state: "inactive",
-    };
-
-    const user3: User = {
-      id: 3,
-      name: "user3",
-      state: "inactive",
-    };
-
-    const users = [user1, user2, user3];
-    setFreeUsers(users);
+    getNotLoggedUsers();
+    if (selectedUser) {
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ ...selectedUser, state: "NOT_LOGGED" }),
+      );
+    }
   }, []);
 
   return (
     <div>
-      <p>Login page</p>
+      <h2>Login page</h2>
 
-      {freeUsers.length ? (
-        <div>
-          <select onChange={handleUserSelected} defaultValue={"DEFAULT"}>
-            <option value="DEFAULT" disabled>
-              Select your option
-            </option>
-            {freeUsers.map((user) => (
-              <option key={user.id} value={user.name}>
-                {user.name}
+      <Button>
+        <ButtonLink to="admin">Admin panel</ButtonLink>
+      </Button>
+
+      <Content>
+        {freeUsers.length ? (
+          <SelectContainer>
+            <Select onChange={handleUserSelected} defaultValue={"DEFAULT"}>
+              <option value="DEFAULT" disabled>
+                Select user
               </option>
-            ))}
-          </select>
-          {selectedUser && (
-            <button>
-              <Link to="office">login</Link>
-            </button>
-          )}
-        </div>
-      ) : (
-        <p>All users are logged in!</p>
-      )}
+              {freeUsers.map((user) => (
+                <option key={user.id} value={JSON.stringify(user)}>
+                  {user.name}
+                </option>
+              ))}
+            </Select>
+            {selectedUser && (
+              <Button onClick={logInUser}>
+                <ButtonLink to="office">Login</ButtonLink>
+              </Button>
+            )}
+          </SelectContainer>
+        ) : (
+          <p>All users are logged in!</p>
+        )}
+      </Content>
     </div>
   );
 };
+
+const Content = styled.div`
+  margin-top: 30px;
+`;
+
+const Select = styled.select`
+  width: 200px;
+  padding: 8px 16px;
+`;
+
+const SelectContainer = styled.div`
+  display: flex;
+  gap: 20px;
+`;

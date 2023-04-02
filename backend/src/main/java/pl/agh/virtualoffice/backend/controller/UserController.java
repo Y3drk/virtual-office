@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.agh.virtualoffice.backend.users.model.State;
 import pl.agh.virtualoffice.backend.users.model.User;
 import pl.agh.virtualoffice.backend.users.positions.UserPositionProvider;
+import pl.agh.virtualoffice.backend.users.model.UserStatus;
 import pl.agh.virtualoffice.backend.users.service.UserService;
 import pl.agh.virtualoffice.backend.util.Position;
 
@@ -27,6 +28,7 @@ import static pl.agh.virtualoffice.backend.users.model.State.NOT_LOGGED;
 @RequestMapping("/users")
 public class UserController {
 
+    public static final String NOT_LOGGED_STRING = "NOT_LOGGED";
     private final UserService userService;
     private final UserPositionProvider userPositionProvider;
 
@@ -38,7 +40,7 @@ public class UserController {
 
     @GetMapping
     @ResponseBody
-    public List<User> getUsersByState(@RequestParam State state) {
+    public List<User> getUsersByState(@RequestParam(defaultValue = NOT_LOGGED_STRING) State state) {
         return userService.getUsersByState(state);
     }
 
@@ -49,7 +51,7 @@ public class UserController {
         return userService.clearAndAddNewUsers(users);
     }
 
-    @PutMapping("{userId}")
+    @PutMapping("/{userId}")
     @ResponseBody
     public User changeUserState(@PathVariable int userId, @RequestParam State state) {
         return userService.updateUserState(userId, state).orElseThrow(() -> new ResponseStatusException(
@@ -60,5 +62,12 @@ public class UserController {
     @ResponseBody
     public Map<Integer, Position> getAllUserPositions() {
         return userPositionProvider.getAllUsersPositions();
+    }
+
+    @PutMapping("/status/{userId}")
+    @ResponseBody
+    public User changeUserStatus(@PathVariable int userId, @RequestParam UserStatus userStatus) {
+        return userService.updateUserStatus(userId, userStatus).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "User not found"));
     }
 }
