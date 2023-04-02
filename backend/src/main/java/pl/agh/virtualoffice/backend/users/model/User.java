@@ -21,12 +21,24 @@ public class User {
     @Enumerated(EnumType.STRING)
     private State state;
 
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
     public User() {
     }
 
-    public User(String name, State state) {
+    public User(String name, State state, UserStatus userStatus) {
         this.name = name;
         this.state = state;
+        this.userStatus = userStatus;
+    }
+
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public String getName() {
