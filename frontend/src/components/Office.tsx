@@ -40,8 +40,8 @@ export function Office() {
 
     const [clientsideUsers, setClientsideUsers] = useState<ClientsideUser[]>([]);
 
-    const [othersLeft, setOthersLeft] = useState(clientsideUsers.map((otherUser) => otherUser.position[0]));
-    const [othersTop, setOthersTop] = useState(clientsideUsers.map((otherUser) => otherUser.position[1]));
+    const [othersLeft, setOthersLeft] = useState<number[]>([]);
+    const [othersTop, setOthersTop] = useState<number[]>([]);
 
     const [popUpIsOpen, setPopUpIsOpen] = useState(false);
 
@@ -55,6 +55,8 @@ export function Office() {
             setCurrentMappedUser({...parsedLoggedIn, spawningPoint: 0, position: [0,0]});
             const tmp = mapDBUsersToClientside(users, parsedLoggedIn);
             setClientsideUsers(tmp);
+            setOthersLeft(tmp.map((user, index) => desks[index].center[0]));
+            setOthersTop(tmp.map((user, index) => desks[index].center[1]));
         }
     };
 
@@ -119,15 +121,13 @@ export function Office() {
     };
 
     useEffect(() => {
-        console.log('bbb')
         getLoggedUsers()
     }, [])
 
 
     useEffect(() => {
-        for (let otherUserIndex in clientsideUsers) {
-            console.log("other user location:", othersLeft[otherUserIndex], othersTop[otherUserIndex]);
-            if (euklidean_distance(userLeft, userTop, othersLeft[otherUserIndex], othersTop[otherUserIndex]) < USER_PROXIMITY_RANGE) {
+        for (let idx in clientsideUsers) {
+            if (euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) < USER_PROXIMITY_RANGE) {
                 setPopUpIsOpen(true);
             }
         }
