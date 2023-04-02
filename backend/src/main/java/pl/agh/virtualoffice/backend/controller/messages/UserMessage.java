@@ -6,19 +6,19 @@ public class UserMessage {
     private int yCoordinate;
     private int userId;
 
-    public int getXCoordinate() {
+    public int getxCoordinate() {
         return xCoordinate;
     }
 
-    public void setXCoordinate(int xCoordinate) {
+    public void setxCoordinate(int xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
-    public int getYCoordinate() {
+    public int getyCoordinate() {
         return yCoordinate;
     }
 
-    public void setYCoordinate(int yCoordinate) {
+    public void setyCoordinate(int yCoordinate) {
         this.yCoordinate = yCoordinate;
     }
 
