@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { Admin, Login, Office, Chat } from "./components";
+import { Admin, Login, Office, Chat, Archive } from "./components";
 
 const App = () => {
   return (
@@ -9,6 +9,7 @@ const App = () => {
         <Route path="/admin" element={<Admin />} />
         <Route path="/office" element={<Office />}>
           <Route path="chat" element={<Chat />} />
+          <Route path="archive" element={<Archive />} />
         </Route>
       </Routes>
     </div>

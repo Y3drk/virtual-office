@@ -1,0 +1,8 @@
+export type messageType = "INIT_CHAT" | "MESSAGE" | "CLOSE_CHAT";
+
+export interface ChatMessage {
+  senderId : number,
+  chatId: number,
+  message: string,
+  type: messageType;
+  }

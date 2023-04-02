@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import locations from "../assets/locations.json";
-import { PopUp } from "./PopUp";
+// import {ClientsideUser, UserStatus} from "../other/UserDatamodel";
+import { PopUp, PopUpType } from "./PopUp";
 import { Backdrop } from "./Backdrop";
 import image from "../assets/office_5.jpg";
 
@@ -39,6 +40,8 @@ export function Office() {
 
   const [userLeft, setUserLeft] = useState(0);
   const [userTop, setUserTop] = useState(0);
+
+const [popUpType, setPopUpType] = useState<PopUpType>("chat");
 
   const [clientsideUsers, setClientsideUsers] = useState<UserWithPositions[]>([]);
 
@@ -111,13 +114,18 @@ export function Office() {
           setUserTop(() => newPosition);
         }
         break;
-
       case "ArrowLeft":
         newPosition = userLeft - MOVE_BY;
         if (newPosition >= 0) {
           setUserLeft(() => newPosition);
         }
         break;
+
+    //     if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
+    //         setPopUpIsOpen(true);
+    //         setPopUpType("archive");
+    //     }
+    // }, [userLeft, userTop, othersLeft, othersTop]);
 
       case "ArrowRight":
         newPosition = userLeft + MOVE_BY;
@@ -133,22 +141,50 @@ export function Office() {
   }, []);
 
   useEffect(() => {
-    for (let idx in clientsideUsers) {
-      if (
-        euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) <
-        USER_PROXIMITY_RANGE
-      ) {
+    if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
         setPopUpIsOpen(true);
-      }
+        setPopUpType("archive");
     }
+    for (let idx in clientsideUsers) {
+        console.log(clientsideUsers);
+        if (euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) < USER_PROXIMITY_RANGE) {
+            setPopUpIsOpen(true);
+            setPopUpType("chat");
+        }
+    }
+  }, [userLeft, userTop, othersLeft, othersTop])
 
-    if (
-      euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) <
-      OBJECT_PROXIMITY_RANGE
-    ) {
-      setPopUpIsOpen(true);
-    }
-  }, [userLeft, userTop, othersLeft, othersTop]);
+    // useEffect(() => {
+    //     for (let idx in clientsideUsers) {
+    //         if (euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) < USER_PROXIMITY_RANGE) {
+    //             setPopUpIsOpen(true);
+    //             setPopUpType("chat");
+    //         }
+
+
+    //     if (euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) < OBJECT_PROXIMITY_RANGE) {
+    //         setPopUpIsOpen(true);
+    //         setPopUpType("archive");
+    //     }
+    // }, [userLeft, userTop, othersLeft, othersTop]);
+    //     }
+//   useEffect(() => {
+//     for (let idx in clientsideUsers) {
+//       if (
+//         euklidean_distance(userLeft, userTop, othersLeft[idx], othersTop[idx]) <
+//         USER_PROXIMITY_RANGE
+//       ) {
+//         setPopUpIsOpen(true);
+//       }
+//     }
+
+//     if (
+//       euklidean_distance(userLeft, userTop, archive.center[0], archive.center[1]) <
+//       OBJECT_PROXIMITY_RANGE
+//     ) {
+//       setPopUpIsOpen(true);
+//     }
+//   }, [userLeft, userTop, othersLeft, othersTop]);
 
   return (
     <>
@@ -157,10 +193,6 @@ export function Office() {
           <DataRow>
             <h3>User from local storage: {currentMappedUser.name}</h3>
             <Button onClick={logoutUser}>Logout</Button>
-            <Link to="chat">
-              <ChatButton>Click</ChatButton>
-            </Link>
-            <Outlet />
           </DataRow>
           <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
             {clientsideUsers.map((user, index) => (
@@ -178,8 +210,8 @@ export function Office() {
           </OfficeContainer>
           {popUpIsOpen && (
             <>
-              <PopUp onClose={closePopUp} type="chat" />
-              <Backdrop onClick={closePopUp} />
+
+                                    <PopUp type={popUpType} onClose={closePopUp} />              <Backdrop onClick={closePopUp} />
             </>
           )}
           {settingsIsOpen && (
@@ -277,9 +309,10 @@ export const OfficeContainer = styled.div`
 `;
 
 export const ChatButton = styled.div`
-  width: 5vw;
-  height: 3vh;
-  background: red;
+  width: 6rem;
+  height: 20%;
+  margin-left: 40%;
+  background: green;
   color: white;
   display: flex;
   flex-direction: column;
