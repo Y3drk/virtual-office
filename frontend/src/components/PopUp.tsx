@@ -1,5 +1,7 @@
 import React from "react";
+import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components";
+import { ChatButton } from "./Office";
 
 export type PopUpProps = {
     onClose(): void;
@@ -8,6 +10,10 @@ export type PopUpProps = {
 
 export const PopUp = (props: PopUpProps) => {
 return (<StyledModal>
+          <Link to="chat">
+            <ChatButton>Click</ChatButton>
+          </Link>
+          <Outlet/>
     <p>POP UP TEST!</p>
     <button onClick={props.onClose}>CLOSE</button>
 </StyledModal>);

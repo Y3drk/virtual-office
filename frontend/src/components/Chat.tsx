@@ -35,7 +35,7 @@ export const Chat = () => {
       <ChatHeader>
         <ChatTitle>Chat</ChatTitle>
         <ExitContainer>
-          <Link to="../">
+          <Link to="../" style={{ textDecoration: 'none' }}>
             <Exit>X</Exit>
           </Link>
         </ExitContainer>
@@ -114,6 +114,7 @@ export const ChatMessage = styled.div`
 
 export const ChatForm = styled.form`
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 10px;
@@ -125,9 +126,8 @@ export const ChatInput = styled.input`
   flex: 1;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
   background-color: #f0f0f0;
-
+  width: 15vw;
   &:focus {
     outline: none;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
@@ -138,7 +138,6 @@ export const ChatButton = styled.button`
   border: none;
   border-radius: 4px;
   padding: 10px;
-  font-size: 16px;
   background-color: #4caf50;
   color: #fff;
   cursor: pointer;
@@ -161,6 +160,8 @@ export const ExitContainer = styled.div`
 export const Exit = styled.div`
     width: 2vw;
     height 2vw;
+    font-size: 1.2vw;
+    padding-top:0.5vw;
     text-align: center;
     border-radius: 5px;
     color: white;

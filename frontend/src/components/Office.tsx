@@ -144,12 +144,9 @@ export function Office() {
                         <DataRow>
                             <h3>User from local storage: {currentMappedUser.name}</h3>
                             <Button onClick={logoutUser}>Logout</Button>
-                            <Link to="chat">
-                                <ChatButton>Click</ChatButton>
-                            </Link>
-                            <Outlet/>
                         </DataRow>
                         <OfficeContainer tabIndex={0} onKeyDown={keyDownHandler}>
+                            
                             {clientsideUsers.map((user, index) => <OthersCircle key={user.id}
                                                                                 left={othersLeft[index]}
                                                                                 top={othersTop[index]}>{user.name}
