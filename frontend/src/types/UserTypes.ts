@@ -4,7 +4,7 @@ export type UserState = "NOT_LOGGED" | "LOGGED";
 export enum UserStatus {
   NEED_HELP = "Need help",
   CODING = "Coding",
-  BUSY = "I'm busy!",
+  IM_BUSY = "I'm busy!",
   AFK = "Afooa",
 }
 export interface UserWithName {
