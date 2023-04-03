@@ -194,7 +194,7 @@ export function Office() {
       {currentMappedUser &&
         (
           <StompSessionProvider
-            url={"http://localhost:8080/socket"}
+            url={"/socket"}
             // debug={STOMP => console.log({STOMP})}
             // onConnect={() => console.log({STOMP_CONNECT: 'TCP connection successfully established'})}
           >
