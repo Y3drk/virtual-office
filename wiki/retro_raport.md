@@ -21,7 +21,7 @@ Dla każdej kartki znaleźliśmy przyczynę problemu i rozwiązanie.
 3. **Brak przedyskutowania dokładnie jak łączy backend z frontendem (3 pkt / MAD)**
    - PRZYCZYNA: mało czasu poświęconego na techniczną dyskusje
    - ROZWIĄZANIE: przedyskutowanie tematu, live coding osób robiących frontend i backend
-   - WYNIK: sporą część funkcjonalności udało się połączy
+   - WYNIK: sporą część funkcjonalności udało się połączyć
      <br/>
      <br/>
 4. **Brak perspektywy wizji projektu (2 pkt / MAD)**
@@ -50,5 +50,5 @@ Dla każdej kartki znaleźliśmy przyczynę problemu i rozwiązanie.
      <br/>
 8. **Porażka LFC (1 pkt / MAD)**
    - PRZYCZYNA: niezależna od nas
-   - ROZWIĄZANIE: powstrzymanie się od sprawdzania wyników meczu
+   - ROZWIĄZANIE: powstrzymanie się od sprawdzania wyników meczu (w niedzielnym Grand Prix Australii wystarczyło obejrzeć pierwsze okrążenie ~JZ)
    - WYNIK: na kolejnym hackathonie przetestujemy czy działa ;)

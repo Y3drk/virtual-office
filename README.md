@@ -2,7 +2,7 @@
 
 ## Opis
 
-Projekt stworzony podczas hackathonu w ramach przedmiotu Inżynieria Oprogramowania.
+Projekt stworzony podczas hackathonu 02-03.04.2023, w ramach przedmiotu Inżynieria Oprogramowania.
 
 ## Autorzy
 
@@ -16,3 +16,4 @@ Projekt stworzony podczas hackathonu w ramach przedmiotu Inżynieria Oprogramowa
 ## Linki
 
 - [Raport z retro](/wiki/retro_raport.md)
+- [Dokumentacja techniczna](./wiki/technology_stack.md)
