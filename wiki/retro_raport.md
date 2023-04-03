@@ -7,7 +7,7 @@ Dla każdej kartki znaleźliśmy przyczynę problemu i rozwiązanie.
 ## Kartki
 
 1. **Praca idzie dość powoli (5 pkt / SAD)**
-   - PRZYCZYNA: brak odpowiedniego zaplanowania zadań, mało szczegółowe User Stories, brak znajomości wybranych technologii problemy techniczne w stworzeniu projektu i skofigurowaniu go lokalnie
+   - PRZYCZYNA: brak odpowiedniego zaplanowania zadań, mało szczegółowe User Stories, brak znajomości wybranych technologii, problemy techniczne w stworzeniu projektu i skofigurowaniu go lokalnie
    - ROZWIĄZANIE: przejrzenie wszystkich zadań - podział większych na mniejsze; update "excelowej Jiry"
    - WYNIK: w niedzielę praca szła dużo sprawniej, zwiększyło się tempo pracy
      <br/>
@@ -19,7 +19,7 @@ Dla każdej kartki znaleźliśmy przyczynę problemu i rozwiązanie.
      <br/>
      <br/>
 3. **Brak przedyskutowania dokładnie jak łączy backend z frontendem (3 pkt / MAD)**
-   - PRZYCZYNA: mało czasu poświęconego na techniczną dyskusje, od początku chcieliśmy się skupić na robieniu zadań
+   - PRZYCZYNA: mało czasu poświęconego na techniczną dyskusje
    - ROZWIĄZANIE: przedyskutowanie tematu, live coding osób robiących frontend i backend
    - WYNIK: sporą część funkcjonalności udało się połączy
      <br/>
@@ -34,7 +34,6 @@ Dla każdej kartki znaleźliśmy przyczynę problemu i rozwiązanie.
    - PRZYCZYNA: dobry dobór grupy (po 3 osoby na fronted i backend), pomaganie sobie nawzajem
    - ROZWIĄZANIE: -
    - WYNIK: kudos!
-     <br/>
      <br/>
      <br/>
 6. **Praca Basi i Jędrzeja (1 pkt / GLAD)**
