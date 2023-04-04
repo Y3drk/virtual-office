@@ -14,7 +14,7 @@ public class OpenAiProvider
 {
     private static final String OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
-    private final String apiKey = "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";
+    private final String apiKey = System.getenv("OPENAI_API_KEY");
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String generateTag(String content)

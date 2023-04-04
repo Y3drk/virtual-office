@@ -2,9 +2,7 @@ version: '3.7'
 
 services:
   backend:
-    build:
-      context: backend
-      dockerfile: Dockerfile
+    image: piotrkow1/virtual-office_backend
     ports:
       - "8080:8080"
     restart: always  
@@ -14,9 +12,7 @@ services:
       - backend-data:/var/lib/virtual-office
 
   frontend:
-    build:
-      context: frontend
-      dockerfile: Dockerfile
+    image: piotrkow1/virtual-office_frontend
     ports:
       - "3000:3000"
     restart: always
