@@ -13,7 +13,7 @@ Opis dokumentacji technicznej aplikacji **Virtual-Office** według wytycznych z 
 
 Podczas tworzenia aplikacji operowaliśmy w dosyć ekstremalnej wersji metodologii **SCRUM**.
 Odbyliśmy 4 spotkania typu **daily** i jedną **retrospektywę**, a nasze User Stories podzieliliśmy na zadania i umieściliśmy na naszym **Kanban boardzie**:
-![img.png](../images/kanban_board.png)
+![img.png](../images/kanban_board_new.png)
 
 W ramach procesu implementacji funkcjonalności **komunikacji między komponentami** oraz ustalania **typów danych** korzystaliśmy również z klasycznej tablicy.  
 Oto część naszych notatek:
